@@ -8,6 +8,28 @@ as interpreted in [CONTRIBUTING.md](CONTRIBUTING.md#versioning).
 
 ## [Unreleased]
 
+### Fixed
+
+- The "Claude is throttling the usage check" notice kept coming back every few
+  minutes. The extension asked the API for the percentages on every refresh,
+  sixty times an hour, from a budget it shares with Claude Code itself — and
+  after being refused it returned to exactly the cadence that earned the refusal.
+
+  It now asks only when there is something to learn: the percentages move when
+  Claude Code runs, and Claude Code leaves a trace when it does, so a transcript
+  newer than the last answer is the signal to ask again. Failing that, it asks
+  every ten minutes anyway, since quotas also reset on a clock. Refusals now back
+  off further each time and reset on success.
+
+  Measured on a real machine, 91 of 93 transcripts had gone untouched for half an
+  hour, so most of those requests were learning nothing.
+
+### Changed
+
+- The default refresh interval is two minutes rather than one. The countdown in
+  the panel has always updated on its own and still does, so nothing looks
+  slower.
+
 ## [0.1.0] - 2026-09-11
 
 First release.

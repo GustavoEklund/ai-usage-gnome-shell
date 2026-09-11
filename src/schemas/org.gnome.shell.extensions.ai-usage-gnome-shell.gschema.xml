@@ -17,12 +17,14 @@
           path="/org/gnome/shell/extensions/ai-usage-gnome-shell/">
 
     <key name="poll-interval-seconds" type="i">
-      <default>60</default>
+      <default>120</default>
       <range min="30" max="3600"/>
       <summary>Seconds between usage refreshes</summary>
       <description>
-        How often the helper is run to refresh usage data. The countdown in the
-        panel updates independently and does not cost a request.
+        How often the helper runs. It does not mean a request that often: the
+        percentages are only fetched when Claude Code has written something since
+        the last answer, or every ten minutes regardless. The countdown in the
+        panel updates on its own and never costs a request.
       </description>
     </key>
 

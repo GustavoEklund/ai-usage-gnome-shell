@@ -15,6 +15,7 @@
 
 import {startOfWeekKey} from '../../calendar.js';
 import {entryFor, isBackingOff} from '../../cache.js';
+import {backoffSeconds, shouldFetchLimits} from './refreshPolicy.js';
 import {redactError} from '../../../lib/redact.js';
 import {StatusCode} from '../../../lib/status.js';
 import {readCredentials, readIdentity} from './credentials.js';
@@ -25,9 +26,6 @@ const USAGE_URL = 'https://api.anthropic.com/api/oauth/usage';
 
 /** Matches what Claude Code itself sends; the endpoint rejects a bare bearer. */
 const OAUTH_BETA = 'oauth-2025-04-20';
-
-const DEFAULT_BACKOFF_SECONDS = 300;
-const MAX_BACKOFF_SECONDS = 3600;
 
 const OK_STATUS = {code: StatusCode.OK, since: null, params: {}};
 
@@ -54,20 +52,6 @@ function requestHeaders(token, userAgent) {
 }
 
 /**
- * How long to wait after a 429. Honours Retry-After when the server sends a
- * sane one, and is capped so a bad header cannot park the indicator for a day.
- *
- * @param {object} headers
- * @returns {number} Seconds.
- */
-export function backoffSeconds(headers) {
-    const raw = Number.parseInt(headers?.['retry-after'] ?? '', 10);
-    if (!Number.isFinite(raw) || raw <= 0)
-        return DEFAULT_BACKOFF_SECONDS;
-    return Math.min(raw, MAX_BACKOFF_SECONDS);
-}
-
-/**
  * Ask the API for the current limits, and work out what the answer means.
  *
  * @param {object} input
@@ -77,13 +61,15 @@ export function backoffSeconds(headers) {
  * @param {number} input.now
  * @param {object} input.entry Cached state for this account.
  * @returns {Promise<{limits: ?Array, status: object, lastSuccessAt: ?string,
- *                   retryAfter: ?string}>}
+ *                   retryAfter: ?string, strikes: number}>}
  */
 async function fetchLimits({http, token, userAgent, now, entry}) {
+    const strikes = entry.rateLimitStrikes ?? 0;
     const unchanged = {
         limits: entry.limits,
         lastSuccessAt: entry.lastSuccessAt,
         retryAfter: entry.retryAfter,
+        strikes,
     };
 
     let response;
@@ -106,6 +92,8 @@ async function fetchLimits({http, token, userAgent, now, entry}) {
             status: OK_STATUS,
             lastSuccessAt: iso(now),
             retryAfter: null,
+            // A success clears the record, so the next refusal starts over.
+            strikes: 0,
         };
     }
 
@@ -119,10 +107,11 @@ async function fetchLimits({http, token, userAgent, now, entry}) {
     }
 
     if (response.status === 429) {
-        const retryAfter = iso(now + backoffSeconds(response.headers) * 1000);
+        const retryAfter = iso(now + backoffSeconds(response.headers, strikes) * 1000);
         return {
             ...unchanged,
             retryAfter,
+            strikes: strikes + 1,
             status: {
                 code: StatusCode.RATE_LIMITED,
                 since: iso(now),
@@ -150,16 +139,14 @@ async function fetchLimits({http, token, userAgent, now, entry}) {
  *
  * @param {object} input
  * @param {object} input.fs
- * @param {object} input.account
- * @param {boolean} input.dirExists
+ * @param {Array} input.files Already listed by the caller; stat only.
  * @param {object} input.entry
  * @param {number} input.now
  * @param {string} [input.timeZone]
  * @returns {{week: object, models: Array, scanState: object}}
  */
-function readLedger({fs, account, dirExists, entry, now, timeZone}) {
+function readLedger({fs, files, entry, now, timeZone}) {
     const weekStart = startOfWeekKey(now, timeZone);
-    const files = dirExists ? fs.listTranscripts(`${account.path}/projects`) : [];
     const {state} = scan({
         state: entry.scanState,
         files,
@@ -208,6 +195,13 @@ export default {
         // it: ~/.claude -> ~/.claude.json.
         const identity = readIdentity(fs.readText(`${account.path}.json`));
 
+        // Listed before the request, deliberately: this is stat, not parsing, so
+        // it allocates nothing, and the newest timestamp answers whether anything
+        // could have changed since the last successful call.
+        const files = dirExists ? fs.listTranscripts(`${account.path}/projects`) : [];
+        const newestActivityMs = files.reduce(
+            (newest, file) => Math.max(newest, file.mtimeMs), 0);
+
         let limits = entry.limits;
         let {status} = credentials;
         let lastSuccessAt = entry.lastSuccessAt;
@@ -217,6 +211,8 @@ export default {
         // Reading the transcripts allocates hard enough to have GJS collecting
         // garbage, and GJS refuses to run an async GIO callback during a
         // collection — a pending request would simply never come back.
+        let strikes = entry.rateLimitStrikes ?? 0;
+
         if (credentials.token !== null && isBackingOff(entry, now)) {
             status = {
                 code: StatusCode.RATE_LIMITED,
@@ -224,13 +220,26 @@ export default {
                 params: {retryAt: entry.retryAfter},
             };
         } else if (credentials.token !== null) {
-            const fetched = await fetchLimits({
-                http, token: credentials.token, userAgent, now, entry,
+            const worthAsking = shouldFetchLimits({
+                hasCachedLimits: limits !== null,
+                lastSuccessAt,
+                newestActivityMs,
+                now,
             });
-            ({limits, status, lastSuccessAt, retryAfter} = fetched);
+
+            if (worthAsking) {
+                const fetched = await fetchLimits({
+                    http, token: credentials.token, userAgent, now, entry,
+                });
+                ({limits, status, lastSuccessAt, retryAfter, strikes} = fetched);
+            } else {
+                // Nothing has been written locally since the last answer, so the
+                // percentages cannot have moved. The cached ones are current.
+                status = OK_STATUS;
+            }
         }
 
-        const ledger = readLedger({fs, account, dirExists, entry, now, timeZone});
+        const ledger = readLedger({fs, files, entry, now, timeZone});
 
         return {
             account: {
@@ -243,7 +252,13 @@ export default {
                 week: ledger.week,
                 models: ledger.models,
             },
-            entry: {scanState: ledger.scanState, limits, lastSuccessAt, retryAfter},
+            entry: {
+                scanState: ledger.scanState,
+                limits,
+                lastSuccessAt,
+                retryAfter,
+                rateLimitStrikes: strikes,
+            },
         };
     },
 };

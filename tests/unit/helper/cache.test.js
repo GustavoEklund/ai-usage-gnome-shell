@@ -56,6 +56,7 @@ describe('entryFor', () => {
     it('invents an empty entry for an account it has never seen', () => {
         expect(entryFor(emptyCache(), 'new')).toEqual({
             scanState: null, limits: null, lastSuccessAt: null, retryAfter: null,
+            rateLimitStrikes: 0,
         });
     });
 });

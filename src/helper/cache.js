@@ -85,6 +85,7 @@ export function entryFor(cache, accountId) {
         limits: null,
         lastSuccessAt: null,
         retryAfter: null,
+        rateLimitStrikes: 0,
     };
 }
 

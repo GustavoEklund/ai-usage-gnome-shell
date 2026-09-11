@@ -2,8 +2,7 @@
 import {readFileSync} from 'node:fs';
 import {describe, expect, it} from 'vitest';
 
-import provider, {backoffSeconds}
-    from '../../../../../src/helper/providers/claude/index.js';
+import provider from '../../../../../src/helper/providers/claude/index.js';
 import {emptyCache, updateEntry} from '../../../../../src/helper/cache.js';
 import {StatusCode} from '../../../../../src/lib/status.js';
 import {fakeFs, fakeHttp} from '../../../../support/fakes.js';
@@ -138,6 +137,49 @@ describe('fetchAccount / not usable', () => {
     });
 });
 
+describe('fetchAccount / asking only when it is worth asking', () => {
+    // The fixture disk stamps its transcripts two days before NOW, so "nothing
+    // has happened locally" is the default state for these.
+    const withHistory = extra => updateEntry(emptyCache(), ACCOUNT.id, {
+        limits: [{id: 'session', role: 'session', percent: 17}],
+        lastSuccessAt: new Date(NOW - 60000).toISOString(),
+        ...extra,
+    });
+
+    it('serves the cached percentages when no transcript changed since', async () => {
+        const {http, run} = setup({cache: withHistory()});
+        const {account} = await run();
+
+        expect(http.calls).toHaveLength(0);
+        expect(account.status.code).toBe(StatusCode.OK);
+        expect(account.limits).toEqual([{id: 'session', role: 'session', percent: 17}]);
+    });
+
+    it('still refreshes the token history while skipping the request', async () => {
+        const {account} = await (setup({cache: withHistory()})).run();
+        expect(account.week.days[4].tokens).toBe(1152);
+    });
+
+    it('asks as soon as Claude Code writes something', async () => {
+        const {ctx, http, run} = setup({cache: withHistory()});
+        // A transcript written after the last successful call.
+        ctx.fs.listTranscripts = dir => fakeFs({
+            [`${dir}/proj/session.jsonl`]: transcript,
+        }, {mtimeMs: NOW - 1000, dirs: [DIR]}).listTranscripts(dir);
+
+        await run();
+        expect(http.calls).toHaveLength(1);
+    });
+
+    it('asks anyway once the idle window has passed', async () => {
+        const {http, run} = setup({
+            cache: withHistory({lastSuccessAt: new Date(NOW - 3600000).toISOString()}),
+        });
+        await run();
+        expect(http.calls).toHaveLength(1);
+    });
+});
+
 describe('fetchAccount / the API said no', () => {
     it('treats 401 on an unexpired token as a revocation', async () => {
         const cache = updateEntry(emptyCache(), ACCOUNT.id, {limits: [{id: 'session'}]});
@@ -155,6 +197,39 @@ describe('fetchAccount / the API said no', () => {
         expect(account.status.code).toBe(StatusCode.RATE_LIMITED);
         expect(account.status.params.retryAt).toBe('2026-09-11T16:34:00.000Z');
         expect(entry.retryAfter).toBe('2026-09-11T16:34:00.000Z');
+    });
+
+    it('escalates the backoff so the same cadence does not earn the same refusal', async () => {
+        const first = await (setup({http: fakeHttp({status: 429})})).run();
+        expect(first.entry.rateLimitStrikes).toBe(1);
+        // 300s for the first refusal.
+        expect(first.entry.retryAfter).toBe('2026-09-11T16:37:00.000Z');
+
+        const cache = updateEntry(emptyCache(), ACCOUNT.id,
+            {rateLimitStrikes: 3, limits: null});
+        const later = await (setup({http: fakeHttp({status: 429}), cache})).run();
+        expect(later.entry.rateLimitStrikes).toBe(4);
+        // 300 * 2^3 = 2400s.
+        expect(later.entry.retryAfter).toBe('2026-09-11T17:12:00.000Z');
+    });
+
+    it('reads a cache written before strikes existed, without tripping over it', async () => {
+        // An upgrade in place hands us an entry with no rateLimitStrikes field.
+        const legacy = {
+            version: 1,
+            accounts: {[ACCOUNT.id]: {scanState: null, limits: null,
+                lastSuccessAt: null, retryAfter: null}},
+        };
+        const {entry} = await (setup({http: fakeHttp({status: 429}), cache: legacy})).run();
+        expect(entry.rateLimitStrikes).toBe(1);
+        expect(entry.retryAfter).toBe('2026-09-11T16:37:00.000Z');
+    });
+
+    it('forgets the refusals once a request succeeds', async () => {
+        const cache = updateEntry(emptyCache(), ACCOUNT.id,
+            {rateLimitStrikes: 4, limits: null});
+        const {entry} = await (setup({cache})).run();
+        expect(entry.rateLimitStrikes).toBe(0);
     });
 
     it('does not call the API again while the backoff is running', async () => {
@@ -202,20 +277,3 @@ describe('fetchAccount / the API said no', () => {
     });
 });
 
-describe('backoffSeconds', () => {
-    it('honours a sane Retry-After', () => {
-        expect(backoffSeconds({'retry-after': '90'})).toBe(90);
-    });
-
-    it('falls back to five minutes when there is no usable header', () => {
-        expect(backoffSeconds(undefined)).toBe(300);
-        expect(backoffSeconds({})).toBe(300);
-        expect(backoffSeconds({'retry-after': 'later'})).toBe(300);
-        expect(backoffSeconds({'retry-after': '0'})).toBe(300);
-        expect(backoffSeconds({'retry-after': '-5'})).toBe(300);
-    });
-
-    it('caps an absurd Retry-After so the indicator cannot be parked for a day', () => {
-        expect(backoffSeconds({'retry-after': '999999'})).toBe(3600);
-    });
-});
