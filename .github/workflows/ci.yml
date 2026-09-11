@@ -20,12 +20,16 @@ jobs:
           node-version: '22'
           cache: npm
 
-      # gjs runs the integration test in the real runtime;
-      # libglib2.0-bin provides glib-compile-schemas and gettext the xgettext target.
+      # gjs runs the integration test in the real runtime; libglib2.0-bin provides
+      # glib-compile-schemas and gettext the xgettext target. gir1.2-soup-3.0 is the
+      # typelib the helper's HTTP adapter needs: a GNOME desktop has it because
+      # gnome-shell pulls it in, which is exactly why a bare runner is the only place
+      # its absence shows up.
       - name: Install GNOME toolchain
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends gjs libglib2.0-bin gettext
+          sudo apt-get install -y --no-install-recommends \
+            gjs libglib2.0-bin gir1.2-soup-3.0 gettext
 
       - run: npm ci
 

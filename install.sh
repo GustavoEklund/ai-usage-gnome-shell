@@ -38,6 +38,12 @@ command -v gnome-shell >/dev/null || die "GNOME Shell was not found."
 VERSION="$(gnome-shell --version | grep -oE '[0-9]+' | head -1)"
 [[ "$VERSION" -ge 45 ]] || die "GNOME Shell 45 or newer is required (found $VERSION)."
 
+# The helper talks HTTPS through libsoup. A GNOME desktop normally has this because
+# gnome-shell itself uses it, but checking here turns a silent "couldn't read usage"
+# in the menu into an install-time message that names the package to install.
+gjs -c 'imports.gi.versions.Soup = "3.0"; imports.gi.Soup;' >/dev/null 2>&1 \
+  || die "The libsoup 3 GObject bindings are missing. On Debian or Ubuntu: sudo apt install gir1.2-soup-3.0"
+
 # --- fetch ------------------------------------------------------------------
 
 WORK="$(mktemp -d)"
