@@ -33,6 +33,17 @@ export class Poller {
     }
 
     /**
+     * Swap the argv used from the next run onwards. The extension forces an
+     * update check on its first run and drops the flag afterwards, which would
+     * otherwise mean tearing down and rebuilding the poller for one argument.
+     *
+     * @param {string[]} command
+     */
+    setCommand(command) {
+        this._command = command;
+    }
+
+    /**
      * @param {number} intervalSeconds
      */
     start(intervalSeconds) {

@@ -29,6 +29,10 @@ First release.
 - One-line installer, and `--uninstall`.
 - A provider interface: adding one is a directory and a line in the registry.
   See [docs/adding-a-provider.md](docs/adding-a-provider.md).
+- Update notice and one-click update: the extension asks GitHub about releases
+  when it starts and a few times a day after that, shows a row when a newer one
+  exists, and installs it on request through `gnome-extensions install`. Can be
+  turned off, which stops it contacting GitHub at all.
 
 ### Security
 
@@ -37,5 +41,8 @@ First release.
   and racing Claude Code for it would sign the user out of their editor.
 - Every error string passes through a redactor before reaching a log, a status
   message or the cache, with tests asserting no token can escape.
+- The update button will only download an asset attached to a release of this
+  repository, will only proceed if the bytes are an archive, and unpacks through
+  GNOME's own `gnome-extensions install` rather than by hand.
 
 [Unreleased]: https://github.com/GustavoEklund/ai-usage-gnome-shell/commits/main

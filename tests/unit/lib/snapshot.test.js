@@ -11,6 +11,12 @@ import {
 const wellFormed = {
     schemaVersion: 1,
     generatedAt: '2026-09-11T17:05:12Z',
+    update: {
+        current: '0.1.0', latest: '0.2.0', available: true,
+        url: 'https://github.com/x/releases/tag/v0.2.0',
+        bundleUrl: 'https://github.com/x/a.shell-extension.zip',
+        checkedAt: '2026-09-11T16:32:00Z', error: null,
+    },
     providers: [{
         id: 'claude',
         displayName: 'Claude',
@@ -45,7 +51,7 @@ const wellFormed = {
 describe('emptySnapshot', () => {
     it('is a valid snapshot with nothing in it', () => {
         expect(emptySnapshot()).toEqual({
-            schemaVersion: SCHEMA_VERSION, generatedAt: null, providers: [],
+            schemaVersion: SCHEMA_VERSION, generatedAt: null, providers: [], update: null,
         });
     });
 });
@@ -116,6 +122,21 @@ describe('normalizeSnapshot / hostile input', () => {
 
     it('keeps a schema version it does not recognise, so the caller can refuse it', () => {
         expect(normalizeSnapshot({schemaVersion: 99}).schemaVersion).toBe(99);
+    });
+
+    it('treats a missing or unusable update block as "never checked"', () => {
+        expect(normalizeSnapshot({}).update).toBeNull();
+        expect(normalizeSnapshot({update: 'soon'}).update).toBeNull();
+        expect(normalizeSnapshot({update: null}).update).toBeNull();
+    });
+
+    it('only believes an explicit true for update availability', () => {
+        // Anything less would let a malformed payload nag about an update that
+        // does not exist, or worse, offer a download that is not there.
+        expect(normalizeSnapshot({update: {available: 'yes'}}).update.available).toBe(false);
+        expect(normalizeSnapshot({update: {available: 1}}).update.available).toBe(false);
+        expect(normalizeSnapshot({update: {latest: '', url: ''}}).update)
+            .toMatchObject({latest: null, url: null});
     });
 });
 

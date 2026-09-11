@@ -15,6 +15,8 @@ describe('parseArgs / defaults', () => {
             pretty: false,
             help: false,
             now: null,
+            checkUpdates: true,
+            forceUpdateCheck: false,
         });
     });
 
@@ -58,6 +60,15 @@ describe('parseArgs / options', () => {
         expect(parse(['--now=yesterday']).now).toBeNull();
     });
 
+    it('takes the update-check flags', () => {
+        expect(parse(['--check-updates'])).toMatchObject({
+            checkUpdates: true, forceUpdateCheck: true,
+        });
+        expect(parse(['--no-update-check'])).toMatchObject({
+            checkUpdates: false, forceUpdateCheck: false,
+        });
+    });
+
     it('recognises both spellings of help', () => {
         expect(parse(['-h']).help).toBe(true);
         expect(parse(['--help']).help).toBe(true);
@@ -84,7 +95,8 @@ describe('resolveConfigDirs', () => {
 describe('usage', () => {
     it('documents every option and the read-only promise', () => {
         const text = usage();
-        for (const flag of ['--config-dir', '--cache-dir', '--providers', '--pretty', '--help'])
+        for (const flag of ['--config-dir', '--cache-dir', '--providers', '--pretty',
+            '--check-updates', '--no-update-check', '--help'])
             expect(text).toContain(flag);
         expect(text).toContain('never writes to it');
     });

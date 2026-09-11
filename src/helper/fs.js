@@ -8,6 +8,8 @@
 import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 
+import {versionFromMetadata} from '../lib/version.js';
+
 const ENUMERATE_ATTRIBUTES = [
     Gio.FILE_ATTRIBUTE_STANDARD_NAME,
     Gio.FILE_ATTRIBUTE_STANDARD_TYPE,
@@ -131,6 +133,22 @@ export function createFs() {
         listTranscripts: root => (isDirectory(root) ? collectTranscripts(root, []) : []),
         readChunk,
     };
+}
+
+/**
+ * The version this build declares, read from the metadata.json beside the module
+ * that asks. Written down once, in metadata.json, so that `make release` bumping
+ * it is enough — a constant in the source would be a constant the release does
+ * not touch, and a helper that misreports its own version decides wrongly about
+ * every update from then on.
+ *
+ * @param {string} moduleUrl The caller's import.meta.url.
+ * @returns {?string}
+ */
+export function readOwnVersion(moduleUrl) {
+    const directory = GLib.path_get_dirname(GLib.filename_from_uri(moduleUrl)[0]);
+    return versionFromMetadata(
+        readText(GLib.build_filenamev([directory, '..', 'metadata.json'])));
 }
 
 /**

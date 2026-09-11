@@ -124,5 +124,14 @@
         }
       ]
     }
-  ]
+  ],
+  "update": {
+    "current": "<version>",
+    "latest": null,
+    "available": false,
+    "url": null,
+    "bundleUrl": null,
+    "checkedAt": null,
+    "error": null
+  }
 }

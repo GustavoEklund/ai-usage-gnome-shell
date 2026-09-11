@@ -149,6 +149,36 @@
   padding: 0.3em 0;
 }
 
+/* Update notice */
+
+.ai-usage-update {
+  spacing: 0.3em;
+  padding: 0.2em 0.1em;
+}
+
+.ai-usage-update-heading {
+  spacing: 0.6em;
+}
+
+.ai-usage-update-icon {
+  icon-size: 1.1em;
+}
+
+.ai-usage-update-title {
+  font-weight: bold;
+}
+
+.ai-usage-update-detail {
+  font-size: 0.85em;
+}
+
+.ai-usage-update-button {
+  padding: 0.25em 0.9em;
+  border-radius: 0.5em;
+  border: 1px solid transparent;
+  font-weight: bold;
+}
+
 /* Degraded-state banner */
 
 .ai-usage-banner {

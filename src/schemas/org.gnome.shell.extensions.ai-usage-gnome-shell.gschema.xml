@@ -58,6 +58,16 @@
       </description>
     </key>
 
+    <key name="check-for-updates" type="b">
+      <default>true</default>
+      <summary>Check GitHub for new releases</summary>
+      <description>
+        Ask GitHub whether a newer release exists: once when the extension starts,
+        and a few times a day after that. Turning this off stops the extension
+        contacting GitHub at all, and hides the update notice.
+      </description>
+    </key>
+
     <key name="theme-variant"
          enum="org.gnome.shell.extensions.ai-usage-gnome-shell.theme-variant">
       <default>'auto'</default>

@@ -7,7 +7,9 @@
 //   * the last limits it successfully fetched, so an expired token or a dropped
 //     connection degrades into old numbers with an explanation rather than a
 //     blank popup;
-//   * a backoff deadline, so a 429 is not answered by hammering.
+//   * a backoff deadline, so a 429 is not answered by hammering;
+//   * the last update check, which is what keeps the extension from asking GitHub
+//     about releases on every refresh.
 //
 // Never a token. The cache file is written to ~/.cache and is not a place for a
 // credential to live; the provider passes the token straight from the credentials
@@ -21,7 +23,7 @@ const CACHE_VERSION = 1;
  * @returns {object}
  */
 export function emptyCache() {
-    return {version: CACHE_VERSION, accounts: {}};
+    return {version: CACHE_VERSION, accounts: {}, updates: null};
 }
 
 /**
@@ -44,7 +46,11 @@ export function parseCache(text) {
         parsed.accounts === null)
         return emptyCache();
 
-    return {version: CACHE_VERSION, accounts: parsed.accounts};
+    return {
+        version: CACHE_VERSION,
+        accounts: parsed.accounts,
+        updates: parsed.updates ?? null,
+    };
 }
 
 /**
@@ -52,7 +58,20 @@ export function parseCache(text) {
  * @returns {string}
  */
 export function serializeCache(cache) {
-    return JSON.stringify({version: CACHE_VERSION, accounts: cache.accounts});
+    return JSON.stringify({
+        version: CACHE_VERSION,
+        accounts: cache.accounts,
+        updates: cache.updates ?? null,
+    });
+}
+
+/**
+ * @param {object} cache
+ * @param {?object} updates
+ * @returns {object} A new cache; the input is not modified.
+ */
+export function withUpdates(cache, updates) {
+    return {...cache, updates};
 }
 
 /**
@@ -77,6 +96,7 @@ export function entryFor(cache, accountId) {
  */
 export function updateEntry(cache, accountId, changes) {
     return {
+        ...cache,
         version: CACHE_VERSION,
         accounts: {
             ...cache.accounts,
@@ -100,7 +120,7 @@ export function pruneCache(cache, accountIds) {
         if (keep.has(id))
             accounts[id] = entry;
     }
-    return {version: CACHE_VERSION, accounts};
+    return {...cache, version: CACHE_VERSION, accounts};
 }
 
 /**

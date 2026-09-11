@@ -9,6 +9,7 @@ import {
     pruneCache,
     serializeCache,
     updateEntry,
+    withUpdates,
 } from '../../../src/helper/cache.js';
 
 const NOW = Date.parse('2026-09-11T16:32:00Z');
@@ -25,6 +26,29 @@ describe('parseCache', () => {
             '{"version":99,"accounts":{}}', '{"version":1}', '{"version":1,"accounts":null}']) {
             expect(parseCache(input)).toEqual(emptyCache());
         }
+    });
+});
+
+describe('withUpdates', () => {
+    it('keeps the update check beside the accounts, and survives a round trip', () => {
+        const entry = {latest: '0.2.0', checkedAt: '2026-09-11T16:00:00Z'};
+        const cache = withUpdates(updateEntry(emptyCache(), 'a', {limits: []}), entry);
+
+        expect(cache.updates).toEqual(entry);
+        expect(parseCache(serializeCache(cache))).toEqual(cache);
+    });
+
+    it('is absent, not undefined, when nothing has been checked', () => {
+        expect(emptyCache().updates).toBeNull();
+        expect(parseCache('{"version":1,"accounts":{}}').updates).toBeNull();
+    });
+
+    it('is not lost when an account entry is written or the cache is pruned', () => {
+        const entry = {latest: '0.2.0'};
+        const cache = withUpdates(emptyCache(), entry);
+
+        expect(updateEntry(cache, 'a', {limits: []}).updates).toEqual(entry);
+        expect(pruneCache(updateEntry(cache, 'a', {}), []).updates).toEqual(entry);
     });
 });
 

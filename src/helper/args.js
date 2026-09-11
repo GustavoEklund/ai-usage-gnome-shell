@@ -34,6 +34,8 @@ export function parseArgs(argv, env, home) {
         pretty: false,
         help: false,
         now: null,
+        checkUpdates: true,
+        forceUpdateCheck: false,
     };
 
     for (const argument of argv) {
@@ -41,6 +43,10 @@ export function parseArgs(argv, env, home) {
             options.help = true;
         else if (argument === '--pretty')
             options.pretty = true;
+        else if (argument === '--no-update-check')
+            options.checkUpdates = false;
+        else if (argument === '--check-updates')
+            options.forceUpdateCheck = true;
         else if (argument.startsWith('--config-dir='))
             options.configDirs.push(argument.slice('--config-dir='.length));
         else if (argument.startsWith('--cache-dir='))
@@ -92,6 +98,8 @@ export function usage() {
         '  --providers=a,b     Providers to query. Default: claude',
         '  --pretty            Indent the output.',
         '  --now=ISO8601       Pretend it is this instant. For reproducible runs.',
+        '  --check-updates     Ask GitHub about releases now, ignoring the interval.',
+        '  --no-update-check   Do not contact GitHub at all.',
         '  -h, --help          Show this message.',
         '',
         'The Claude provider reads its credentials file and never writes to it.',

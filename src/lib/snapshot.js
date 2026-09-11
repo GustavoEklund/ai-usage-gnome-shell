@@ -48,7 +48,29 @@ function list(value) {
  * @returns {object}
  */
 export function emptySnapshot() {
-    return {schemaVersion: SCHEMA_VERSION, generatedAt: null, providers: []};
+    return {schemaVersion: SCHEMA_VERSION, generatedAt: null, providers: [], update: null};
+}
+
+/**
+ * The self-update check. Null when it has never run; `available` is the only
+ * field the UI acts on, and it is false unless there is something installable.
+ *
+ * @param {*} raw
+ * @returns {?object}
+ */
+function normalizeUpdate(raw) {
+    if (raw === null || typeof raw !== 'object')
+        return null;
+
+    return {
+        current: text(raw.current),
+        latest: text(raw.latest),
+        available: raw.available === true,
+        url: text(raw.url),
+        bundleUrl: text(raw.bundleUrl),
+        checkedAt: text(raw.checkedAt),
+        error: text(raw.error),
+    };
 }
 
 /**
@@ -158,6 +180,7 @@ export function normalizeSnapshot(raw) {
     return {
         schemaVersion: number(raw?.schemaVersion, SCHEMA_VERSION),
         generatedAt: text(raw?.generatedAt),
+        update: normalizeUpdate(raw?.update ?? null),
         providers: list(raw?.providers).map(provider => ({
             id: text(provider?.id) ?? 'unknown',
             displayName: text(provider?.displayName) ?? 'Unknown provider',

@@ -17,13 +17,15 @@ import GLib from 'gi://GLib';
 import System from 'system';
 
 import {parseArgs, usage} from './args.js';
-import {parseCache, serializeCache} from './cache.js';
-import {createFs, writePrivate} from './fs.js';
+import {parseCache, serializeCache, withUpdates} from './cache.js';
+import {createFs, readOwnVersion, writePrivate} from './fs.js';
 import {createHttp} from './http.js';
 import {collect} from './registry.js';
+import {checkForUpdate} from './updates.js';
 import {redactError} from '../lib/redact.js';
 
-const VERSION = '0.1.0';
+// Read, not written down: see readOwnVersion().
+const VERSION = readOwnVersion(import.meta.url) ?? '0.0.0';
 const USER_AGENT = `ai-usage-gnome-shell/${VERSION}`;
 
 // Nothing here should take anywhere near this long: a cold scan of ~100 MB plus
@@ -38,22 +40,40 @@ const WATCHDOG_SECONDS = 60;
  */
 async function run(options) {
     const fs = createFs();
+    const http = createHttp({userAgent: USER_AGENT});
     const cachePath = `${options.cacheDir}/state.json`;
     const cache = parseCache(fs.readText(cachePath));
+    const now = options.now ?? Date.now();
+
+    // Awaited before collect() rather than run alongside it, and deliberately so:
+    // collect() ends in a scan that allocates hard enough to have GJS collecting
+    // garbage, and GJS will not run an async GIO callback during a collection. A
+    // request still in flight at that point simply never comes back.
+    const {update, cached} = await checkForUpdate({
+        http,
+        now,
+        currentVersion: VERSION,
+        userAgent: USER_AGENT,
+        enabled: options.checkUpdates,
+        force: options.forceUpdateCheck,
+        cached: cache.updates,
+    });
 
     const {snapshot, cache: nextCache} = await collect({
         fs,
-        http: createHttp({userAgent: USER_AGENT}),
-        now: options.now ?? Date.now(),
+        http,
+        now,
         timeZone: undefined,
         configDirs: options.configDirs,
         userAgent: USER_AGENT,
     }, {enabledProviders: options.providers, cache});
 
+    snapshot.update = update;
+
     // Best effort: a cache we could not write costs speed on the next run,
     // never correctness, so it must not fail the run.
     try {
-        writePrivate(cachePath, serializeCache(nextCache));
+        writePrivate(cachePath, serializeCache(withUpdates(nextCache, cached)));
     } catch (error) {
         printerr(`ai-usage: could not write cache: ${redactError(error)}`);
     }

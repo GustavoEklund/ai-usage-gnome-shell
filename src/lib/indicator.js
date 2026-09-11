@@ -18,12 +18,13 @@ import {buildPanelLabel} from './panelLabel.js';
 import {AccountSection} from './sections/accountSection.js';
 import {ModelSection} from './sections/modelSection.js';
 import {StatusBanner} from './sections/statusBanner.js';
+import {UpdateBanner} from './sections/updateBanner.js';
 import {WeekSection} from './sections/weekSection.js';
 import {verticalBox} from './widgets.js';
 
 export const Indicator = GObject.registerClass(
 class Indicator extends PanelMenu.Button {
-    constructor({iconsPath, onRefresh, onOpenPreferences}) {
+    constructor({iconsPath, onRefresh, onOpenPreferences, onUpdate}) {
         super(0.0, 'AI Usage', false);
 
         this._iconsPath = iconsPath;
@@ -50,14 +51,19 @@ class Indicator extends PanelMenu.Button {
         box.add_child(this._warning);
         this.add_child(box);
 
-        this._buildMenu({onRefresh, onOpenPreferences});
+        this._buildMenu({onRefresh, onOpenPreferences, onUpdate});
     }
 
-    _buildMenu({onRefresh, onOpenPreferences}) {
+    _buildMenu({onRefresh, onOpenPreferences, onUpdate}) {
         // Each section is its own menu item so the separators between them are the
         // shell's own, themed like every other menu on the system. One giant item
         // with hand-drawn rules would mean inventing a border colour, which this
         // project deliberately never does.
+        this._update = new UpdateBanner(() => onUpdate());
+        this._updateItem = this._addContent(this._update);
+        this._updateSeparator = new PopupMenu.PopupSeparatorMenuItem();
+        this.menu.addMenuItem(this._updateSeparator);
+
         this._banner = new StatusBanner(text => this._copyToClipboard(text));
         this._bannerItem = this._addContent(this._banner);
         this._bannerSeparator = new PopupMenu.PopupSeparatorMenuItem();
@@ -117,13 +123,18 @@ class Indicator extends PanelMenu.Button {
      * @param {?object} view.snapshot Decorated snapshot.
      * @param {object} view.status Result of describeStatus().
      * @param {object} view.panel Panel preferences.
+     * @param {object} view.update Result of describeUpdate().
      * @param {number} view.now
      */
-    update({snapshot, status, panel, now}) {
+    update({snapshot, status, panel, update, now}) {
         this._snapshot = snapshot;
         this._status = status;
         this._panel = panel;
         this.refreshPanel(now);
+
+        this._update.update(update);
+        this._updateItem.visible = this._update.visible;
+        this._updateSeparator.visible = this._update.visible;
 
         this._banner.update(status);
         this._bannerItem.visible = this._banner.visible;

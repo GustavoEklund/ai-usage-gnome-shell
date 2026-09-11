@@ -22,7 +22,41 @@ export function createHttp({userAgent = 'ai-usage-gnome-shell', timeoutSeconds =
     // the pending callback with it, and the promise below would never settle.
     sessions.add(session);
 
+    /**
+     * @param {string} url
+     * @param {object} headers
+     * @returns {Promise<{status: number, bytes: ?Uint8Array, headers: object}>}
+     */
+    function fetchBytes(url, headers) {
+        return new Promise((resolve, reject) => {
+            const message = Soup.Message.new('GET', url);
+            for (const [name, value] of Object.entries(headers))
+                message.request_headers.append(name, value);
+
+            session.send_and_read_async(message, GLib.PRIORITY_DEFAULT, null,
+                (_session, result) => {
+                    try {
+                        const bytes = session.send_and_read_finish(result);
+                        const responseHeaders = {};
+                        message.get_response_headers().foreach((name, value) => {
+                            responseHeaders[name.toLowerCase()] = value;
+                        });
+                        resolve({
+                            // See get() below for why this is not get_status().
+                            status: message.statusCode,
+                            bytes: bytes?.get_data() ?? null,
+                            headers: responseHeaders,
+                        });
+                    } catch (error) {
+                        reject(error);
+                    }
+                });
+        });
+    }
+
     return {
+        getBytes: fetchBytes,
+
         /**
          * @param {string} url
          * @param {object} headers

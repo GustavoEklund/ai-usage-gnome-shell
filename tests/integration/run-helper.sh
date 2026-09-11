@@ -10,8 +10,9 @@
 # structuredClone being absent, or a byte offset that only misbehaves once a real
 # TextDecoder is involved.
 #
-# No network: the fixture has no usable credentials, so the provider never reaches
-# the HTTP adapter and the run is deterministic.
+# No network at all: the fixture has no usable credentials, so the provider never
+# reaches the HTTP adapter, and --no-update-check keeps the release check from
+# firing. A test that talks to GitHub is a test that fails when GitHub does.
 set -euo pipefail
 
 cd "$(dirname "$0")/../.."
@@ -47,6 +48,7 @@ gjs -m src/helper/main.js \
   --config-dir="$CONFIG" \
   --cache-dir="$WORK/cache" \
   --now="$NOW" \
+  --no-update-check \
   --pretty > "$ACTUAL"
 
 # The snapshot carries a wall clock and the fixture's temporary paths; normalise
@@ -67,7 +69,8 @@ fi
 # Second run must read nothing new and produce the same answer: this is the
 # incremental scan, which is the whole reason a refresh is cheap.
 gjs -m src/helper/main.js \
-  --config-dir="$CONFIG" --cache-dir="$WORK/cache" --now="$NOW" --pretty > "$WORK/second.json"
+  --config-dir="$CONFIG" --cache-dir="$WORK/cache" --now="$NOW" \
+  --no-update-check --pretty > "$WORK/second.json"
 node tests/integration/normalize.js "$WORK/second.json" "$CONFIG" > "$WORK/second-normalized.json"
 
 if ! diff -q "$WORK/normalized.json" "$WORK/second-normalized.json" >/dev/null; then

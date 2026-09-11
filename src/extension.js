@@ -22,6 +22,11 @@ import {Poller} from './lib/poller.js';
 import {isNewProblem, overallStatus} from './lib/pollerLogic.js';
 import {decorateSnapshot} from './lib/snapshot.js';
 import {describeStatus} from './lib/status.js';
+import {
+    describeUpdate,
+    interpretUpdateResult,
+    UpdateState,
+} from './lib/updateResult.js';
 
 // The countdown in the panel should move roughly once a minute; ticking a little
 // faster keeps it from lagging visibly, and costs a string rebuild, not a request.
@@ -35,6 +40,13 @@ export default class AiUsageExtension extends Extension {
         this._status = {code: 'ok', since: null, params: {}};
         this._lastNotified = null;
         this._monitors = [];
+        this._updateState = UpdateState.IDLE;
+        this._updateVersion = null;
+        this._updateReason = null;
+        this._updater = null;
+        // The first run after enabling always asks about releases: starting the
+        // session is when a user is most likely to act on knowing there is one.
+        this._firstPoll = true;
 
         this._applyTheme();
 
@@ -42,6 +54,7 @@ export default class AiUsageExtension extends Extension {
             iconsPath: `${this.path}/icons`,
             onRefresh: () => this._poller?.refreshNow(),
             onOpenPreferences: () => this.openPreferences(),
+            onUpdate: () => this._applyUpdate(),
         });
         Main.panel.addToStatusArea(this.uuid, this._indicator);
 
@@ -82,6 +95,9 @@ export default class AiUsageExtension extends Extension {
         this._poller?.stop();
         this._poller = null;
 
+        this._updater?.force_exit();
+        this._updater = null;
+
         this._indicator?.destroy();
         this._indicator = null;
 
@@ -91,6 +107,7 @@ export default class AiUsageExtension extends Extension {
         this._snapshot = null;
         this._status = null;
         this._lastNotified = null;
+        this._updateState = UpdateState.IDLE;
     }
 
     _helperCommand() {
@@ -102,7 +119,65 @@ export default class AiUsageExtension extends Extension {
         const providers = this._settings.get_strv('enabled-providers');
         command.push(`--providers=${providers.join(',')}`);
 
+        if (!this._settings.get_boolean('check-for-updates'))
+            command.push('--no-update-check');
+        else if (this._firstPoll)
+            command.push('--check-updates');
+
         return command;
+    }
+
+    /**
+     * Download and install the newer release. Its own process, so that unpacking
+     * an archive cannot stall the shell, and so the shell never holds the bytes.
+     */
+    _applyUpdate() {
+        if (this._updater !== null)
+            return;
+
+        const update = this._snapshot?.update;
+        if (!update?.bundleUrl)
+            return;
+
+        this._updateState = UpdateState.RUNNING;
+        this._updateReason = null;
+        this._render();
+
+        try {
+            this._updater = Gio.Subprocess.new([
+                'gjs', '-m', `${this.path}/helper/apply-update.js`,
+                `--bundle-url=${update.bundleUrl}`,
+                `--version=${update.latest}`,
+            ], Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE);
+        } catch (error) {
+            this._onUpdateFinished({stdout: null, stderr: error.message, exitStatus: -1});
+            return;
+        }
+
+        this._updater.communicate_utf8_async(null, null, (source, result) => {
+            try {
+                const [, stdout, stderr] = source.communicate_utf8_finish(result);
+                this._onUpdateFinished({
+                    stdout, stderr, exitStatus: source.get_exit_status(),
+                });
+            } catch (error) {
+                this._onUpdateFinished({
+                    stdout: null, stderr: error.message, exitStatus: -1,
+                });
+            }
+        });
+    }
+
+    _onUpdateFinished(result) {
+        this._updater = null;
+        if (!this._indicator)
+            return;
+
+        const interpreted = interpretUpdateResult(result);
+        this._updateState = interpreted.state;
+        this._updateVersion = interpreted.version;
+        this._updateReason = interpreted.reason;
+        this._render();
     }
 
     /**
@@ -126,7 +201,7 @@ export default class AiUsageExtension extends Extension {
 
     _onSettingChanged(key) {
         if (key === 'poll-interval-seconds' || key === 'claude-config-dirs' ||
-            key === 'enabled-providers') {
+            key === 'enabled-providers' || key === 'check-for-updates') {
             this._poller.stop();
             this._poller = new Poller({
                 command: this._helperCommand(),
@@ -148,6 +223,11 @@ export default class AiUsageExtension extends Extension {
     _onResult({snapshot, status}) {
         if (snapshot !== null)
             this._snapshot = snapshot;
+
+        if (this._firstPoll) {
+            this._firstPoll = false;
+            this._poller.setCommand(this._helperCommand());
+        }
 
         this._status = overallStatus(this._snapshot, status);
         this._maybeNotify();
@@ -192,6 +272,14 @@ export default class AiUsageExtension extends Extension {
                 showPercent: this._settings.get_boolean('panel-show-percent'),
                 showTime: this._settings.get_boolean('panel-show-time'),
             },
+            update: describeUpdate({
+                update: this._snapshot?.update ?? null,
+                state: this._updateState,
+                version: this._updateVersion,
+                reason: this._updateReason,
+                gettext: _,
+                locale: this._locale,
+            }),
             now: Date.now(),
         });
     }

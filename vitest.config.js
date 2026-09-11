@@ -31,6 +31,9 @@ export default defineConfig({
                 'src/helper/http.js',
                 'src/helper/fs.js',
                 'src/helper/main.js',
+                'src/helper/apply-update.js',  // downloads and shells out; logic
+                                              // is in lib/updateTarget.js and
+                                              // lib/updateResult.js
             ],
 
             thresholds: {
