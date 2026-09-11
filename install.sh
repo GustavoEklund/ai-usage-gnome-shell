@@ -12,7 +12,13 @@ set -euo pipefail
 
 UUID="ai-usage-gnome-shell@GustavoEklund.github.io"
 REPO="GustavoEklund/ai-usage-gnome-shell"
-REF="${AI_USAGE_VERSION:-main}"
+# Install the newest release by default, not whatever is on main. Set
+# AI_USAGE_VERSION to a tag (v0.2.0) or a branch to override. Falls back to main
+# when there is no release yet, or when the API cannot be reached.
+latest_release() {
+  curl -fsSL "https://api.github.com/repos/$REPO/releases/latest" 2>/dev/null \
+    | sed -n 's/.*"tag_name": *"\([^"]*\)".*/\1/p' | head -1
+}
 DEST="${XDG_DATA_HOME:-$HOME/.local/share}/gnome-shell/extensions/$UUID"
 
 say() { printf '\033[1m==>\033[0m %s\n' "$*"; }
@@ -48,6 +54,9 @@ gjs -c 'imports.gi.versions.Soup = "3.0"; imports.gi.Soup;' >/dev/null 2>&1 \
 
 WORK="$(mktemp -d)"
 trap 'rm -rf "$WORK"' EXIT
+
+REF="${AI_USAGE_VERSION:-$(latest_release)}"
+REF="${REF:-main}"
 
 say "Downloading $REPO@$REF"
 curl -fsSL "https://github.com/$REPO/archive/$REF.tar.gz" \

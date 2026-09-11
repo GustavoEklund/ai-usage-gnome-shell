@@ -7,6 +7,7 @@ GNOME 46 is the reference target.
 
 ```bash
 make setup        # npm install + activate .githooks (run once after cloning)
+make release VERSION=x.y.z  # promote [Unreleased], bump, verify, commit, tag
 make lint         # eslint, GJS style guide, --max-warnings=0
 make test         # vitest, unit tests only
 make coverage     # vitest + the 100% threshold
@@ -15,6 +16,11 @@ make verify       # what pre-push and CI run: lint + coverage + integration + sc
 make install      # copy to ~/.local/share/gnome-shell/extensions/ and compile schemas
 make smoke        # enable/disable 10x, check the shell logged nothing new
 ```
+
+Releasing is `make release VERSION=x.y.z` then
+`git push origin main --follow-tags`; CI builds the zip and publishes the GitHub
+release from the tag. See CONTRIBUTING.md for what counts as major, minor or
+patch here.
 
 Reload the shell after `make install`: X11 <kbd>Alt+F2</kbd> → `r`; Wayland needs a
 re-login. Watch it with `journalctl -f -o cat /usr/bin/gnome-shell`.
@@ -62,6 +68,34 @@ arrives on the pipe goes through `normalizeSnapshot()` before anything touches i
    never looks for "the session one". A limit Anthropic turns on server-side must
    appear with no code change. Read only the `limits[]` array from the API, never
    the legacy `five_hour` / `seven_day` top-level keys.
+
+## Changelog: update it in the same commit
+
+**Every user-visible change adds a line to `## [Unreleased]` in `CHANGELOG.md`,
+in the commit that makes the change.** Not afterwards, not at release time —
+`make release` refuses to run on an empty `[Unreleased]`, and a change that
+reaches a release without an entry is invisible to everyone deciding whether to
+upgrade.
+
+The format is [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Use the
+existing headings: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`,
+`Security`. Add the heading under `[Unreleased]` if it is not there yet.
+
+Write for someone choosing whether to upgrade, not for someone reading the diff:
+
+> **Fixed** — A rate limit was reported as a generic network error, so the
+> indicator kept retrying instead of backing off.
+
+not "fix status handling".
+
+Skip the entry only for work with no user-visible effect: a refactor, a test, a
+CI change, a comment. When in doubt, add it — a line nobody needed costs less
+than a change nobody heard about.
+
+Never edit a released section. Corrections go in the next one.
+
+`tests/validate-version.js` enforces that `package.json`, `src/metadata.json`
+(`version-name`) and the newest changelog heading agree; it runs in `make verify`.
 
 ## Testing and the gates
 

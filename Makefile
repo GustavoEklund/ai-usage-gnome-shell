@@ -40,9 +40,10 @@ schemas: ## Compile and validate the GSettings schema
 	glib-compile-schemas --strict --targetdir=$(BUILD) src/schemas
 	@echo "schema ok"
 
-validate: ## Check metadata, schema ids and resource:/// import paths
+validate: ## Check metadata, schema ids, import paths and version consistency
 	node tests/validate-metadata.js
 	node tests/validate-imports.js
+	node tests/validate-version.js
 
 pack: schemas validate ## Build the distributable zip with gnome-extensions pack
 	@mkdir -p $(BUILD)
@@ -80,6 +81,21 @@ pot: ## Regenerate the translation template (needs the gettext package)
 	  --keyword=_ --keyword=C_:1c,2 --keyword=N_ --keyword=ngettext:1,2 \
 	  $(TRANSLATABLE) src/schemas/*.xml
 	@echo "pot: $$(grep -c '^msgid' po/ai-usage-gnome-shell.pot) strings"
+
+release: ## Cut a release: make release VERSION=0.2.0
+	@test -n "$(VERSION)" || { echo "usage: make release VERSION=x.y.z" >&2; exit 1; }
+	@git diff --quiet && git diff --cached --quiet \
+	  || { echo "release: commit or stash your changes first" >&2; exit 1; }
+	node tools/prepare-release.js $(VERSION)
+	$(MAKE) pot
+	$(MAKE) verify
+	git add CHANGELOG.md package.json package-lock.json src/metadata.json po
+	git commit -m "release: $(VERSION)"
+	git tag -a v$(VERSION) -m "v$(VERSION)"
+	@echo
+	@echo "release: tagged v$(VERSION). Publish it with:"
+	@echo "    git push origin main --follow-tags"
+	@echo "CI builds the zip and creates the GitHub release from the tag."
 
 clean: ## Remove build artefacts
 	rm -rf $(BUILD) coverage

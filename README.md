@@ -122,7 +122,10 @@ make install   # install from the working tree
 
 The pure modules are held at 100% coverage per file, and the exclusion list in
 `vitest.config.js` is closed: if new code cannot be tested in Node, the logic is in
-the wrong file. Details in [CLAUDE.md](CLAUDE.md).
+the wrong file. [CONTRIBUTING.md](CONTRIBUTING.md) has the rest — the gates, the
+changelog rule, and how releases are cut.
+
+Changes are recorded in [CHANGELOG.md](CHANGELOG.md).
 
 ## Licence
 

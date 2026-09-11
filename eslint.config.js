@@ -143,7 +143,7 @@ export default [
         // Node-only tooling and tests.
         // Tests document themselves through their names; JSDoc on a fixture
         // builder is noise, not documentation.
-        files: ['tests/**/*.js', '*.config.js'],
+        files: ['tests/**/*.js', 'tools/**/*.js', '*.config.js'],
         languageOptions: {
             globals: {
                 process: 'readonly',

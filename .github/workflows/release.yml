@@ -1,0 +1,54 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      # gnome-shell is here only for `gnome-extensions pack`, which is what
+      # extensions.gnome.org expects a submission to have been built with.
+      - name: Install GNOME toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            gjs libglib2.0-bin gir1.2-soup-3.0 gettext gnome-shell-common gnome-shell
+
+      - run: npm ci
+
+      # The tag is not trusted to describe itself: a release is only built from a
+      # tree that passes the same gate every push does.
+      - run: make verify
+
+      - name: Check the tag matches the version in the tree
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          VERSION="$(node -p "require('./package.json').version")"
+          test "$TAG" = "$VERSION" \
+            || { echo "tag v$TAG does not match version $VERSION" >&2; exit 1; }
+
+      - run: make pack
+
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          node tools/changelog-section.js "$VERSION" > release-notes.md
+          gh release create "$GITHUB_REF_NAME" \
+            --title "$GITHUB_REF_NAME" \
+            --notes-file release-notes.md \
+            build/*.shell-extension.zip
