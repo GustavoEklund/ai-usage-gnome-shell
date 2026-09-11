@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Fast gate: style and unit tests. Full gate lives in pre-push and CI.
+set -euo pipefail
+
+cd "$(git rev-parse --show-toplevel)"
+
+if [[ ! -d node_modules ]]; then
+  echo "pre-commit: node_modules missing — run 'make setup' first." >&2
+  exit 1
+fi
+
+echo "pre-commit: lint"
+npx eslint . --max-warnings=0
+
+echo "pre-commit: unit tests"
+npx vitest run --silent
+
+echo "pre-commit: ok"

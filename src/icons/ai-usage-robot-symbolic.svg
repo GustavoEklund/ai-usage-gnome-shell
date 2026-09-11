@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
+  <!--
+    SPDX-License-Identifier: GPL-3.0-or-later
+    SPDX-FileCopyrightText: 2026 Gustavo Eklund
+
+    Drawn to Yaru's symbolic conventions: a 16x16 grid, solid filled shapes rather
+    than outlines, holes cut with evenodd instead of painted in the background
+    colour. Solid because the target size is 16px, where an outlined head turns to
+    mush and a filled one still reads as a robot.
+
+    The comments live INSIDE the root element on purpose. gdk-pixbuf identifies an
+    image by sniffing its first bytes, so anything before `<svg` — an XML prologue,
+    a licence header — makes the loader answer "Unrecognized image file format" and
+    the icon silently renders as nothing.
+  -->
+  <path fill="#808080" fill-rule="evenodd" d="
+    M8 0a1.25 1.25 0 0 0-.75 2.25V3.5H4.5A2.5 2.5 0 0 0 2 6v5a2.5 2.5 0 0 0 2.5 2.5h7A2.5 2.5 0 0 0 14 11V6a2.5 2.5 0 0 0-2.5-2.5H8.75V2.25A1.25 1.25 0 0 0 8 0z
+    M5.75 6.75a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5z
+    M10.25 6.75a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5z
+    M5.5 10.75h5a.75.75 0 0 1 0 1.5h-5a.75.75 0 0 1 0-1.5z
+  "/>
+  <rect fill="#808080" x="0" y="6.75" width="1.5" height="3.5" rx="0.75"/>
+  <rect fill="#808080" x="14.5" y="6.75" width="1.5" height="3.5" rx="0.75"/>
+</svg>

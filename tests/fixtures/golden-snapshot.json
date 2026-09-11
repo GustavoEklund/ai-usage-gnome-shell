@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "<generatedAt>",
+  "providers": [
+    {
+      "id": "claude",
+      "displayName": "Claude",
+      "iconName": "ai-usage-claude-symbolic",
+      "accounts": [
+        {
+          "id": "claude:<configDir>",
+          "label": "fixture@example.com",
+          "organizationName": "Fixture Org",
+          "plan": {
+            "rateLimitTier": "default_claude_max_5x",
+            "subscriptionType": "team"
+          },
+          "status": {
+            "code": "token_expired",
+            "since": "2020-09-13T12:26:40.000Z",
+            "params": {
+              "expiredAt": "2020-09-13T12:26:40.000Z"
+            }
+          },
+          "limits": [],
+          "week": {
+            "startsOn": "sunday",
+            "start": "2026-09-06",
+            "days": [
+              {
+                "date": "2026-09-06",
+                "tokens": 0,
+                "breakdown": {
+                  "input": 0,
+                  "output": 0,
+                  "cacheWrite": 0,
+                  "cacheRead": 0
+                }
+              },
+              {
+                "date": "2026-09-07",
+                "tokens": 0,
+                "breakdown": {
+                  "input": 0,
+                  "output": 0,
+                  "cacheWrite": 0,
+                  "cacheRead": 0
+                }
+              },
+              {
+                "date": "2026-09-08",
+                "tokens": 1334,
+                "breakdown": {
+                  "input": 2,
+                  "output": 282,
+                  "cacheWrite": 50,
+                  "cacheRead": 1000
+                }
+              },
+              {
+                "date": "2026-09-09",
+                "tokens": 0,
+                "breakdown": {
+                  "input": 0,
+                  "output": 0,
+                  "cacheWrite": 0,
+                  "cacheRead": 0
+                }
+              },
+              {
+                "date": "2026-09-10",
+                "tokens": 330,
+                "breakdown": {
+                  "input": 10,
+                  "output": 20,
+                  "cacheWrite": 0,
+                  "cacheRead": 300
+                }
+              },
+              {
+                "date": "2026-09-11",
+                "tokens": 0,
+                "breakdown": {
+                  "input": 0,
+                  "output": 0,
+                  "cacheWrite": 0,
+                  "cacheRead": 0
+                }
+              },
+              {
+                "date": "2026-09-12",
+                "tokens": 0,
+                "breakdown": {
+                  "input": 0,
+                  "output": 0,
+                  "cacheWrite": 0,
+                  "cacheRead": 0
+                }
+              }
+            ]
+          },
+          "models": [
+            {
+              "id": "claude-opus-5",
+              "tokens": 1334,
+              "breakdown": {
+                "input": 2,
+                "output": 282,
+                "cacheWrite": 50,
+                "cacheRead": 1000
+              }
+            },
+            {
+              "id": "claude-haiku-4-5-20251001",
+              "tokens": 330,
+              "breakdown": {
+                "input": 10,
+                "output": 20,
+                "cacheWrite": 0,
+                "cacheRead": 300
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

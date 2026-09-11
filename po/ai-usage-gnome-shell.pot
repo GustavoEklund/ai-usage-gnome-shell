@@ -1,0 +1,389 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Gustavo Eklund
+# This file is distributed under the same license as the ai-usage-gnome-shell package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: ai-usage-gnome-shell\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-11 16:13-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/prefs.js:16
+msgid "General"
+msgstr ""
+
+#: src/prefs.js:29
+msgid "Top bar"
+msgstr ""
+
+#: src/prefs.js:30
+msgid "What the indicator shows next to its icon."
+msgstr ""
+
+#: src/prefs.js:34
+msgid "Track"
+msgstr ""
+
+#: src/prefs.js:35
+msgid "Which limit the percentage and countdown refer to"
+msgstr ""
+
+#: src/prefs.js:37 src/lib/snapshot.js:179
+msgid "Session"
+msgstr ""
+
+#: src/prefs.js:37 src/lib/snapshot.js:181 src/lib/snapshot.js:184
+msgid "Weekly"
+msgstr ""
+
+#: src/prefs.js:37
+msgid "Whichever is highest"
+msgstr ""
+
+#: src/prefs.js:47
+msgid "Show percentage"
+msgstr ""
+
+#: src/prefs.js:47
+msgid "For example, 27%"
+msgstr ""
+
+#: src/prefs.js:49
+msgid "Show time until reset"
+msgstr ""
+
+#: src/prefs.js:49
+msgid "For example, 3h27m"
+msgstr ""
+
+#: src/prefs.js:56
+msgid "Updates"
+msgstr ""
+
+#: src/prefs.js:57
+msgid ""
+"The countdown moves on its own; this is how often the numbers are fetched."
+msgstr ""
+
+#: src/prefs.js:61
+msgid "Refresh every"
+msgstr ""
+
+#: src/prefs.js:62
+msgid "Seconds"
+msgstr ""
+
+#: src/prefs.js:72
+msgid "Notify when data goes stale"
+msgstr ""
+
+#: src/prefs.js:73
+msgid "Once per problem, for example when Claude Code’s token expires"
+msgstr ""
+
+#: src/prefs.js:80
+msgid "Appearance"
+msgstr ""
+
+#: src/prefs.js:81
+msgid "Automatic follows your desktop theme, including its accent colour."
+msgstr ""
+
+#: src/prefs.js:85
+msgid "Style"
+msgstr ""
+
+#: src/prefs.js:86
+msgid "Automatic"
+msgstr ""
+
+#: src/prefs.js:86
+msgid "Yaru"
+msgstr ""
+
+#: src/prefs.js:86
+msgid "Adwaita"
+msgstr ""
+
+#: src/prefs.js:98
+msgid "About"
+msgstr ""
+
+#: src/prefs.js:100
+msgid "Credentials are only ever read"
+msgstr ""
+
+#: src/prefs.js:101
+msgid ""
+"This extension reads Claude Code’s sign-in token and never modifies or "
+"refreshes it. If it expires, the percentages freeze and the menu says so."
+msgstr ""
+
+#: src/lib/snapshot.js:185
+msgid "{model} · weekly"
+msgstr ""
+
+#: src/lib/indicator.js:79
+msgid "Refresh now"
+msgstr ""
+
+#: src/lib/indicator.js:80
+msgid "Settings"
+msgstr ""
+
+#: src/lib/sections/weekSection.js:32
+msgid "{day}: nothing used"
+msgstr ""
+
+#: src/lib/sections/weekSection.js:35
+msgid "in {n}"
+msgstr ""
+
+#: src/lib/sections/weekSection.js:36
+msgid "out {n}"
+msgstr ""
+
+#: src/lib/sections/weekSection.js:37
+msgid "cache w {n}"
+msgstr ""
+
+#: src/lib/sections/weekSection.js:38
+msgid "cache r {n}"
+msgstr ""
+
+#: src/lib/sections/weekSection.js:52
+msgid "This week"
+msgstr ""
+
+#: src/lib/sections/modelSection.js:26
+msgid "By model this week"
+msgstr ""
+
+#: src/lib/sections/modelSection.js:31
+msgid "Nothing used yet this week"
+msgstr ""
+
+#: src/lib/sections/accountSection.js:44
+msgid "No limits to show"
+msgstr ""
+
+#: src/lib/sections/accountSection.js:94
+msgid "resets in {time}"
+msgstr ""
+
+#: src/lib/sections/statusBanner.js:51
+msgid "Copy"
+msgstr ""
+
+#: src/lib/status.js:87
+msgid "Usage percentages are frozen"
+msgstr ""
+
+#: src/lib/status.js:89
+msgid ""
+"Claude Code's sign-in token expired {when}. This extension only ever reads "
+"that token, never refreshes it, so the percentages are the last ones it "
+"could fetch. Token counts come from local files and are still current."
+msgstr ""
+
+#: src/lib/status.js:90
+msgid ""
+"Claude Code's sign-in token has expired. This extension only ever reads that "
+"token, never refreshes it, so the percentages are the last ones it could "
+"fetch. Token counts come from local files and are still current."
+msgstr ""
+
+#: src/lib/status.js:91
+msgid ""
+"Using Claude Code refreshes the token, and the percentages catch up on their "
+"own. To refresh it without starting a session, run the command below."
+msgstr ""
+
+#: src/lib/status.js:97
+msgid "Not signed in to Claude"
+msgstr ""
+
+#: src/lib/status.js:98
+msgid "No Claude credentials were found in {path}."
+msgstr ""
+
+#: src/lib/status.js:100
+msgid "Sign in to Claude Code and the indicator will pick it up."
+msgstr ""
+
+#: src/lib/status.js:105
+msgid "Claude Code not found"
+msgstr ""
+
+#: src/lib/status.js:106
+msgid "Looked for a Claude Code configuration in {path} and found none."
+msgstr ""
+
+#: src/lib/status.js:108
+msgid "If Claude Code lives elsewhere, add its directory in Settings."
+msgstr ""
+
+#: src/lib/status.js:112
+msgid "Claude rejected the saved token"
+msgstr ""
+
+#: src/lib/status.js:113
+msgid ""
+"The API answered 401 even though the saved token has not expired, which "
+"usually means it was revoked."
+msgstr ""
+
+#: src/lib/status.js:114
+msgid "Sign in again to get a fresh token."
+msgstr ""
+
+#: src/lib/status.js:121
+msgid "Could not reach the Claude API"
+msgstr ""
+
+#: src/lib/status.js:123
+msgid "Showing the values from {time}."
+msgstr ""
+
+#: src/lib/status.js:125
+msgid "No usage data has been fetched yet."
+msgstr ""
+
+#: src/lib/status.js:126
+msgid "This retries on its own at the next refresh."
+msgstr ""
+
+#: src/lib/status.js:133
+msgid "Claude is throttling the usage check"
+msgstr ""
+
+#: src/lib/status.js:135
+msgid "Backing off until {time}."
+msgstr ""
+
+#: src/lib/status.js:137
+msgid "Backing off before checking again."
+msgstr ""
+
+#: src/lib/status.js:138
+msgid "The numbers below stay as they were until then."
+msgstr ""
+
+#: src/lib/status.js:143 src/lib/status.js:162
+msgid "Could not read usage"
+msgstr ""
+
+#: src/lib/status.js:145
+msgid "The usage helper failed: {reason}"
+msgstr ""
+
+#: src/lib/status.js:146
+msgid "The usage helper failed without saying why."
+msgstr ""
+
+#: src/lib/status.js:147
+msgid "Details are in the system log under gnome-shell."
+msgstr ""
+
+#: src/lib/status.js:163
+msgid "The usage helper reported an unknown state ({code})."
+msgstr ""
+
+#: src/lib/status.js:164
+msgid ""
+"This usually means the extension and its helper are out of sync; "
+"reinstalling fixes it."
+msgstr ""
+
+#: src/lib/panelLabel.js:152
+msgid "resets in"
+msgstr ""
+
+#: src/lib/panelLabel.js:154
+msgid "AI Usage: no data yet"
+msgstr ""
+
+#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:22
+msgid "Seconds between usage refreshes"
+msgstr ""
+
+#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:23
+msgid ""
+"How often the helper is run to refresh usage data. The countdown in the "
+"panel updates independently and does not cost a request."
+msgstr ""
+
+#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:32
+msgid "Which limit the panel shows"
+msgstr ""
+
+#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:33
+msgid ""
+"Show the 5-hour session limit, the weekly limit, or whichever limit is "
+"currently closest to being used up."
+msgstr ""
+
+#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:41
+msgid "Show the percentage in the panel"
+msgstr ""
+
+#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:42
+msgid "Show the used percentage next to the panel icon."
+msgstr ""
+
+#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:47
+msgid "Show the time until reset in the panel"
+msgstr ""
+
+#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:48
+msgid "Show how long until the shown limit resets."
+msgstr ""
+
+#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:53
+msgid "Notify when usage data cannot be refreshed"
+msgstr ""
+
+#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:54
+msgid ""
+"Send a desktop notification when the extension starts showing stale data, "
+"for example after Claude Code's sign-in token expires. Sent once per "
+"transition, never repeated while the problem persists."
+msgstr ""
+
+#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:64
+msgid "Which style sheet to layer on top of the shell theme"
+msgstr ""
+
+#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:65
+msgid ""
+"auto inherits everything from the active shell theme, which is what makes "
+"the extension follow Yaru's accent colour and light/dark variants. The other "
+"values load an explicit override from the themes directory."
+msgstr ""
+
+#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:74
+msgid "Extra Claude Code configuration directories"
+msgstr ""
+
+#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:75
+msgid ""
+"Directories to read accounts from. Empty means auto-detect: "
+"CLAUDE_CONFIG_DIR if set, otherwise ~/.claude."
+msgstr ""
+
+#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:83
+msgid "Providers to query"
+msgstr ""
+
+#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:84
+msgid "Identifiers of the usage providers to collect data from."
+msgstr ""

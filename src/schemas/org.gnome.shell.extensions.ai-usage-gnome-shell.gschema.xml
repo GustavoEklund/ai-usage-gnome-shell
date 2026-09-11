@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<schemalist gettext-domain="ai-usage-gnome-shell">
+  <enum id="org.gnome.shell.extensions.ai-usage-gnome-shell.panel-limit">
+    <value value="0" nick="session"/>
+    <value value="1" nick="weekly"/>
+    <value value="2" nick="highest"/>
+  </enum>
+
+  <enum id="org.gnome.shell.extensions.ai-usage-gnome-shell.theme-variant">
+    <value value="0" nick="auto"/>
+    <value value="1" nick="yaru"/>
+    <value value="2" nick="adwaita"/>
+  </enum>
+
+  <schema id="org.gnome.shell.extensions.ai-usage-gnome-shell"
+          path="/org/gnome/shell/extensions/ai-usage-gnome-shell/">
+
+    <key name="poll-interval-seconds" type="i">
+      <default>60</default>
+      <range min="30" max="3600"/>
+      <summary>Seconds between usage refreshes</summary>
+      <description>
+        How often the helper is run to refresh usage data. The countdown in the
+        panel updates independently and does not cost a request.
+      </description>
+    </key>
+
+    <key name="panel-limit"
+         enum="org.gnome.shell.extensions.ai-usage-gnome-shell.panel-limit">
+      <default>'session'</default>
+      <summary>Which limit the panel shows</summary>
+      <description>
+        Show the 5-hour session limit, the weekly limit, or whichever limit is
+        currently closest to being used up.
+      </description>
+    </key>
+
+    <key name="panel-show-percent" type="b">
+      <default>true</default>
+      <summary>Show the percentage in the panel</summary>
+      <description>Show the used percentage next to the panel icon.</description>
+    </key>
+
+    <key name="panel-show-time" type="b">
+      <default>true</default>
+      <summary>Show the time until reset in the panel</summary>
+      <description>Show how long until the shown limit resets.</description>
+    </key>
+
+    <key name="notify-on-problem" type="b">
+      <default>false</default>
+      <summary>Notify when usage data cannot be refreshed</summary>
+      <description>
+        Send a desktop notification when the extension starts showing stale data,
+        for example after Claude Code's sign-in token expires. Sent once per
+        transition, never repeated while the problem persists.
+      </description>
+    </key>
+
+    <key name="theme-variant"
+         enum="org.gnome.shell.extensions.ai-usage-gnome-shell.theme-variant">
+      <default>'auto'</default>
+      <summary>Which style sheet to layer on top of the shell theme</summary>
+      <description>
+        auto inherits everything from the active shell theme, which is what makes
+        the extension follow Yaru's accent colour and light/dark variants. The
+        other values load an explicit override from the themes directory.
+      </description>
+    </key>
+
+    <key name="claude-config-dirs" type="as">
+      <default>[]</default>
+      <summary>Extra Claude Code configuration directories</summary>
+      <description>
+        Directories to read accounts from. Empty means auto-detect: CLAUDE_CONFIG_DIR
+        if set, otherwise ~/.claude.
+      </description>
+    </key>
+
+    <key name="enabled-providers" type="as">
+      <default>['claude']</default>
+      <summary>Providers to query</summary>
+      <description>Identifiers of the usage providers to collect data from.</description>
+    </key>
+
+  </schema>
+</schemalist>

@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Full gate. Mirrors exactly what CI runs, so a green push means a green CI.
+set -euo pipefail
+
+cd "$(git rev-parse --show-toplevel)"
+
+if [[ ! -d node_modules ]]; then
+  echo "pre-push: node_modules missing — run 'make setup' first." >&2
+  exit 1
+fi
+
+echo "pre-push: make verify (lint + 100% coverage + integration + schema + metadata)"
+make verify
+
+echo "pre-push: ok"

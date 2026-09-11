@@ -1,0 +1,26 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ * Upstream GNOME's blue, for running the stock Adwaita look on a distribution
+ * whose shell theme does not declare the `slider` bar properties.
+ */
+
+.ai-usage-bar {
+  -barlevel-height: 4px;
+  -barlevel-background-color: rgba(127, 127, 127, 0.25);
+  -barlevel-border-width: 2px;
+  -barlevel-border-color: transparent;
+  -barlevel-active-background-color: #3584e4;
+  -barlevel-active-border-color: transparent;
+  -barlevel-overdrive-color: #c01c28;
+  -barlevel-overdrive-border-color: transparent;
+  -barlevel-overdrive-separator-width: 1px;
+}
+
+.ai-usage-banner {
+  background-color: rgba(53, 132, 228, 0.12);
+  border: 1px solid rgba(53, 132, 228, 0.35);
+}
+
+.ai-usage-copy-button {
+  border: 1px solid rgba(127, 127, 127, 0.4);
+}

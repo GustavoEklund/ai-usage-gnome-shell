@@ -1,0 +1,31 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ * Ubuntu's look, stated explicitly.
+ *
+ * You do not need this on Ubuntu: with theme-variant set to `auto` the bars
+ * already inherit Yaru's accent from the `slider` class, including whichever of
+ * the ten accent colours is selected in Settings. This file is for the opposite
+ * case — wanting the Ubuntu look while running a different shell theme — so it
+ * pins Yaru's default orange rather than following the system.
+ */
+
+.ai-usage-bar {
+  -barlevel-height: 4px;
+  -barlevel-background-color: rgba(127, 127, 127, 0.25);
+  -barlevel-border-width: 2px;
+  -barlevel-border-color: transparent;
+  -barlevel-active-background-color: #E95420;
+  -barlevel-active-border-color: transparent;
+  -barlevel-overdrive-color: #c7162b;
+  -barlevel-overdrive-border-color: transparent;
+  -barlevel-overdrive-separator-width: 1px;
+}
+
+.ai-usage-banner {
+  background-color: rgba(233, 84, 32, 0.12);
+  border: 1px solid rgba(233, 84, 32, 0.35);
+}
+
+.ai-usage-copy-button {
+  border: 1px solid rgba(127, 127, 127, 0.4);
+}

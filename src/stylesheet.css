@@ -1,0 +1,192 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2026 Gustavo Eklund
+ *
+ * Structure only: spacing, sizing and weight. There is deliberately not one
+ * colour in this file.
+ *
+ * Colour arrives by inheritance instead. The panel widget sits inside
+ * .panel-button and picks up the shell's foreground; the bars carry the `slider`
+ * style class and pick up Yaru's -barlevel-* declarations, which is how they
+ * follow Ubuntu's accent through all ten Yaru accent variants and both light and
+ * dark without this project ever naming a colour. Separators are the shell's own
+ * menu separators. Secondary text is dimmed by actor opacity in JS, because St's
+ * CSS has no opacity property.
+ *
+ * Every size is in em, so the whole menu scales with the user's font size.
+ */
+
+/* Panel */
+
+.ai-usage-panel {
+  spacing: 0.4em;
+}
+
+.ai-usage-panel-label {
+  padding-right: 0.2em;
+}
+
+.ai-usage-panel-warning {
+  icon-size: 0.9em;
+}
+
+/* Menu shell. Each section is its own menu item, so the item owns the padding
+ * that separates its content from the separators above and below it. */
+
+.ai-usage-item {
+  padding: 0.55em 0.35em;
+  min-width: 25em;
+}
+
+/* Account card */
+
+.ai-usage-accounts {
+  spacing: 1em;
+}
+
+.ai-usage-account {
+  spacing: 0.7em;
+}
+
+.ai-usage-account-heading {
+  spacing: 0.7em;
+  padding-bottom: 0.15em;
+}
+
+.ai-usage-account-icon {
+  icon-size: 1.5em;
+}
+
+.ai-usage-account-label {
+  font-weight: bold;
+}
+
+.ai-usage-account-sublabel {
+  font-size: 0.85em;
+  padding-top: 0.1em;
+}
+
+/* Sections */
+
+.ai-usage-section {
+  spacing: 0.6em;
+}
+
+.ai-usage-section-title {
+  font-weight: bold;
+  font-size: 0.9em;
+  padding-bottom: 0.1em;
+}
+
+/* Stacked rows: name and value, bar below, reset time below that. Used for the
+ * three headline limits, which deserve the room. */
+
+.ai-usage-rows {
+  spacing: 0.9em;
+}
+
+.ai-usage-row {
+  spacing: 0.35em;
+}
+
+.ai-usage-row-header {
+  spacing: 0.5em;
+}
+
+.ai-usage-row-value {
+  font-feature-settings: "tnum";
+  font-weight: bold;
+}
+
+.ai-usage-row-detail {
+  font-size: 0.8em;
+  padding-top: 0.1em;
+}
+
+.ai-usage-bar {
+  height: 1em;
+}
+
+/* Inline rows: name, bar and value on one line. Used for the seven days and for
+ * the models, where stacking would turn a chart into a wall. */
+
+.ai-usage-inline-rows {
+  spacing: 0.5em;
+}
+
+.ai-usage-inline-row {
+  spacing: 0.7em;
+  height: 1.3em;
+}
+
+.ai-usage-inline-label {
+  min-width: 2.4em;
+  font-size: 0.95em;
+}
+
+.ai-usage-inline-label-wide {
+  min-width: 6em;
+  font-size: 0.95em;
+}
+
+.ai-usage-inline-value {
+  min-width: 4.6em;
+  text-align: right;
+  font-feature-settings: "tnum";
+  font-size: 0.95em;
+}
+
+.ai-usage-inline-emphasis {
+  font-weight: bold;
+}
+
+.ai-usage-detail-line {
+  font-size: 0.78em;
+  padding-top: 0.45em;
+}
+
+.ai-usage-empty {
+  font-size: 0.85em;
+  padding: 0.3em 0;
+}
+
+/* Degraded-state banner */
+
+.ai-usage-banner {
+  spacing: 0.45em;
+  padding: 0.7em 0.8em;
+  border-radius: 0.6em;
+  border: 1px solid transparent;
+}
+
+.ai-usage-banner-heading {
+  spacing: 0.6em;
+}
+
+.ai-usage-banner-icon {
+  icon-size: 1.1em;
+}
+
+.ai-usage-banner-title {
+  font-weight: bold;
+}
+
+.ai-usage-banner-detail,
+.ai-usage-banner-hint {
+  font-size: 0.85em;
+}
+
+.ai-usage-banner-command {
+  spacing: 0.6em;
+  margin-top: 0.35em;
+}
+
+.ai-usage-command-text {
+  font-family: monospace;
+  font-size: 0.85em;
+}
+
+.ai-usage-copy-button {
+  padding: 0.2em 0.8em;
+  border-radius: 0.5em;
+  border: 1px solid transparent;
+}
