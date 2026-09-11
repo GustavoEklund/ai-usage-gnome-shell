@@ -2,7 +2,11 @@
   "uuid": "ai-usage-gnome-shell@GustavoEklund.github.io",
   "name": "AI Usage",
   "description": "Shows Claude Code usage limits in the top bar: session and weekly percentages with their reset times, plus tokens per day and per model for the current week. Reads Claude Code's own credentials without ever modifying them.",
-  "shell-version": ["46", "47", "48"],
+  "shell-version": [
+    "46",
+    "47",
+    "48"
+  ],
   "url": "https://github.com/GustavoEklund/ai-usage-gnome-shell",
   "settings-schema": "org.gnome.shell.extensions.ai-usage-gnome-shell",
   "gettext-domain": "ai-usage-gnome-shell",

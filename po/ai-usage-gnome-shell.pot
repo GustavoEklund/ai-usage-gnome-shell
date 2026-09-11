@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ai-usage-gnome-shell\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-11 16:13-0300\n"
+"POT-Creation-Date: 2026-09-11 17:12-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -37,11 +37,11 @@ msgstr ""
 msgid "Which limit the percentage and countdown refer to"
 msgstr ""
 
-#: src/prefs.js:37 src/lib/snapshot.js:179
+#: src/prefs.js:37 src/lib/snapshot.js:202
 msgid "Session"
 msgstr ""
 
-#: src/prefs.js:37 src/lib/snapshot.js:181 src/lib/snapshot.js:184
+#: src/prefs.js:37 src/lib/snapshot.js:204 src/lib/snapshot.js:207
 msgid "Weekly"
 msgstr ""
 
@@ -128,15 +128,15 @@ msgid ""
 "refreshes it. If it expires, the percentages freeze and the menu says so."
 msgstr ""
 
-#: src/lib/snapshot.js:185
+#: src/lib/snapshot.js:208
 msgid "{model} · weekly"
 msgstr ""
 
-#: src/lib/indicator.js:79
+#: src/lib/indicator.js:85
 msgid "Refresh now"
 msgstr ""
 
-#: src/lib/indicator.js:80
+#: src/lib/indicator.js:86
 msgid "Settings"
 msgstr ""
 
@@ -312,6 +312,56 @@ msgstr ""
 msgid "AI Usage: no data yet"
 msgstr ""
 
+#: src/lib/updateResult.js:111
+msgid "Updating…"
+msgstr ""
+
+#: src/lib/updateResult.js:112
+msgid "Downloading and installing the new version."
+msgstr ""
+
+#: src/lib/updateResult.js:122
+msgid "Updated"
+msgstr ""
+
+#: src/lib/updateResult.js:123
+msgid "Updated to {version}"
+msgstr ""
+
+#: src/lib/updateResult.js:124
+msgid ""
+"Restart GNOME Shell to load it: press Alt+F2, type r, press Enter. On "
+"Wayland, log out and back in."
+msgstr ""
+
+#: src/lib/updateResult.js:133
+msgid "Update failed"
+msgstr ""
+
+#: src/lib/updateResult.js:134
+msgid "The updater did not say what went wrong."
+msgstr ""
+
+#: src/lib/updateResult.js:135
+msgid "Try again"
+msgstr ""
+
+#: src/lib/updateResult.js:146
+msgid "Version {version} is available"
+msgstr ""
+
+#: src/lib/updateResult.js:148
+msgid "You are on {current}, checked at {time}."
+msgstr ""
+
+#: src/lib/updateResult.js:152
+msgid "You are on {current}."
+msgstr ""
+
+#: src/lib/updateResult.js:153
+msgid "Update"
+msgstr ""
+
 #: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:22
 msgid "Seconds between usage refreshes"
 msgstr ""
@@ -359,31 +409,42 @@ msgid ""
 "transition, never repeated while the problem persists."
 msgstr ""
 
+#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:63
+msgid "Check GitHub for new releases"
+msgstr ""
+
 #: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:64
+msgid ""
+"Ask GitHub whether a newer release exists: once when the extension starts, "
+"and a few times a day after that. Turning this off stops the extension "
+"contacting GitHub at all, and hides the update notice."
+msgstr ""
+
+#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:74
 msgid "Which style sheet to layer on top of the shell theme"
 msgstr ""
 
-#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:65
+#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:75
 msgid ""
 "auto inherits everything from the active shell theme, which is what makes "
 "the extension follow Yaru's accent colour and light/dark variants. The other "
 "values load an explicit override from the themes directory."
 msgstr ""
 
-#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:74
+#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:84
 msgid "Extra Claude Code configuration directories"
 msgstr ""
 
-#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:75
+#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:85
 msgid ""
 "Directories to read accounts from. Empty means auto-detect: "
 "CLAUDE_CONFIG_DIR if set, otherwise ~/.claude."
 msgstr ""
 
-#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:83
+#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:93
 msgid "Providers to query"
 msgstr ""
 
-#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:84
+#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:94
 msgid "Identifiers of the usage providers to collect data from."
 msgstr ""
