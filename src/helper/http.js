@@ -45,7 +45,15 @@ export function createHttp({userAgent = 'ai-usage-gnome-shell', timeoutSeconds =
                         });
 
                         resolve({
-                            status: message.get_status(),
+                            // `statusCode`, not `get_status()`. The getter
+                            // marshals into the Soup.Status enum, which has 54
+                            // members and is missing 429 among others - so on a
+                            // rate limit it throws "429 is not a valid value for
+                            // enumeration Status" instead of returning a number.
+                            // That turned the one response that matters most into
+                            // a generic network error, and the backoff that should
+                            // have followed never happened.
+                            status: message.statusCode,
                             body: parseJson(data),
                             headers: responseHeaders,
                         });

@@ -96,6 +96,12 @@ arrives on the pipe goes through `normalizeSnapshot()` before anything touches i
   `overdrive-start`. Never hardcode a colour.
 - No `session-modes` in `metadata.json`: the extension should disable itself on
   the lock screen, which stops polling for free.
+- **Read a Soup response's code as `message.statusCode`, never `get_status()`.**
+  The getter marshals into the `Soup.Status` enum, which has 54 members and is
+  missing 429 (and 425, 426, 428, 431, 451). On a rate limit it throws
+  `429 is not a valid value for enumeration Status`, which turned the one response
+  that most needs handling into a generic network error with no backoff. There is
+  an eslint rule for it.
 
 ## Facts already verified on the target machine
 

@@ -109,6 +109,10 @@ const gjsRules = {
             selector: 'CallExpression[callee.name="structuredClone"]',
             message: 'structuredClone() does not exist in GJS 1.80 (GNOME 46)',
         },
+        {
+            selector: 'CallExpression[callee.property.name="get_status"]',
+            message: 'Use message.statusCode: get_status() marshals into Soup.Status, which has no 429 member and throws on a rate limit',
+        },
     ],
 };
 
