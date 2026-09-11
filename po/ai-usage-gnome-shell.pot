@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ai-usage-gnome-shell\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-11 17:12-0300\n"
+"POT-Creation-Date: 2026-09-11 17:26-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -368,83 +368,85 @@ msgstr ""
 
 #: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:23
 msgid ""
-"How often the helper is run to refresh usage data. The countdown in the "
-"panel updates independently and does not cost a request."
+"How often the helper runs. It does not mean a request that often: the "
+"percentages are only fetched when Claude Code has written something since "
+"the last answer, or every ten minutes regardless. The countdown in the panel "
+"updates on its own and never costs a request."
 msgstr ""
 
-#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:32
+#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:34
 msgid "Which limit the panel shows"
 msgstr ""
 
-#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:33
+#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:35
 msgid ""
 "Show the 5-hour session limit, the weekly limit, or whichever limit is "
 "currently closest to being used up."
 msgstr ""
 
-#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:41
+#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:43
 msgid "Show the percentage in the panel"
 msgstr ""
 
-#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:42
+#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:44
 msgid "Show the used percentage next to the panel icon."
 msgstr ""
 
-#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:47
+#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:49
 msgid "Show the time until reset in the panel"
 msgstr ""
 
-#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:48
+#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:50
 msgid "Show how long until the shown limit resets."
 msgstr ""
 
-#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:53
+#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:55
 msgid "Notify when usage data cannot be refreshed"
 msgstr ""
 
-#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:54
+#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:56
 msgid ""
 "Send a desktop notification when the extension starts showing stale data, "
 "for example after Claude Code's sign-in token expires. Sent once per "
 "transition, never repeated while the problem persists."
 msgstr ""
 
-#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:63
+#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:65
 msgid "Check GitHub for new releases"
 msgstr ""
 
-#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:64
+#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:66
 msgid ""
 "Ask GitHub whether a newer release exists: once when the extension starts, "
 "and a few times a day after that. Turning this off stops the extension "
 "contacting GitHub at all, and hides the update notice."
 msgstr ""
 
-#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:74
+#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:76
 msgid "Which style sheet to layer on top of the shell theme"
 msgstr ""
 
-#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:75
+#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:77
 msgid ""
 "auto inherits everything from the active shell theme, which is what makes "
 "the extension follow Yaru's accent colour and light/dark variants. The other "
 "values load an explicit override from the themes directory."
 msgstr ""
 
-#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:84
+#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:86
 msgid "Extra Claude Code configuration directories"
 msgstr ""
 
-#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:85
+#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:87
 msgid ""
 "Directories to read accounts from. Empty means auto-detect: "
 "CLAUDE_CONFIG_DIR if set, otherwise ~/.claude."
 msgstr ""
 
-#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:93
+#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:95
 msgid "Providers to query"
 msgstr ""
 
-#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:94
+#: src/schemas/org.gnome.shell.extensions.ai-usage-gnome-shell.gschema.xml:96
 msgid "Identifiers of the usage providers to collect data from."
 msgstr ""

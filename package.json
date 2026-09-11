@@ -1,6 +1,6 @@
 {
   "name": "ai-usage-gnome-shell",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "GNOME Shell extension showing Claude Code usage limits and token history in the top bar",
   "type": "module",
   "private": true,

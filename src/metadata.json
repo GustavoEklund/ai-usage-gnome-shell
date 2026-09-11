@@ -10,5 +10,5 @@
   "url": "https://github.com/GustavoEklund/ai-usage-gnome-shell",
   "settings-schema": "org.gnome.shell.extensions.ai-usage-gnome-shell",
   "gettext-domain": "ai-usage-gnome-shell",
-  "version-name": "0.1.0"
+  "version-name": "0.1.1"
 }

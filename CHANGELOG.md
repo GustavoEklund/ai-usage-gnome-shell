@@ -8,6 +8,8 @@ as interpreted in [CONTRIBUTING.md](CONTRIBUTING.md#versioning).
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-09-11
+
 ### Fixed
 
 - The "Claude is throttling the usage check" notice kept coming back every few
@@ -70,5 +72,6 @@ First release.
   GNOME's own `gnome-extensions install` rather than by hand.
 
 
-[Unreleased]: https://github.com/GustavoEklund/ai-usage-gnome-shell/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/GustavoEklund/ai-usage-gnome-shell/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/GustavoEklund/ai-usage-gnome-shell/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/GustavoEklund/ai-usage-gnome-shell/releases/tag/v0.1.0
